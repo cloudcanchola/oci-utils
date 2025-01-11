@@ -2,53 +2,15 @@ import logging
 
 import oci.exceptions
 from oci.identity.identity_client import IdentityClient
-from oci.identity.models import Domain
 from oci.identity_domains import IdentityDomainsClient
 from oci.identity_domains.models import AppStatusChanger
 
 from utils.tokens import generate_access_token
+from utils.utils import get_domain_info
 
-# Enable logging oci
+# Enable logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
-
-
-def display_domains_menu(domains_list: list):
-    """Creates a options menu with all the Identity iam found"""
-    print("Domains found on tenancy:")
-    for i, domain in enumerate(domains_list, start=1):
-        print(f"{i}) {domain.display_name}")
-
-
-def get_all_domains_info(compartments_list, client: IdentityClient):
-    return [
-        domain
-        for compartment in compartments_list
-        for domain in client.list_domains(compartment_id=compartment).data
-    ]
-
-
-def get_domain_info(tenancy_id, client: IdentityClient) -> Domain:
-    """Get the selected domain information to deactivate"""
-    try:
-        compartments_data = client.list_compartments(compartment_id=tenancy_id, compartment_id_in_subtree=True)
-        compartments_list = [compartment.id for compartment in compartments_data.data]
-        compartments_list.append(tenancy_id)
-
-        # Getting all iam domains info to be used as a list
-        domains_info = get_all_domains_info(compartments_list=compartments_list, client=client)
-
-        # Display menu based on iam info
-        display_domains_menu(domains_list=domains_info)
-
-        option = int(input("Select an option from Domain list: "))
-        if option in range(1, len(domains_info) + 1):
-            selected_domain = domains_info[option - 1]
-            return selected_domain
-        else:
-            logger.info("Invalid selection.")
-    except ValueError:
-        logger.error("Please enter a valid number.")
 
 
 def deactivate_app(client: IdentityDomainsClient, **kwargs):
