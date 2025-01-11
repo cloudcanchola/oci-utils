@@ -8,7 +8,7 @@ from oci.identity_domains.models import AppStatusChanger
 
 from utils.tokens import generate_access_token
 
-# Enable logging
+# Enable logging oci
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 
