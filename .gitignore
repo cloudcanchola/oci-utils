@@ -1,2 +1,8 @@
 /config/.env
 .idea/*
+
+# Ignore Python cache directories
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
